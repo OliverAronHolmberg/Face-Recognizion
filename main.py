@@ -5,6 +5,8 @@ from deepface import DeepFace # type: ignore
 # Referens bild
 reference_image_path = "Images\WIN_20250430_20_44_12_Pro.jpg"
 
+# Boolean message
+face_detected = False
 
 # Starta webcam
 cap = cv2.VideoCapture(0)
@@ -30,11 +32,11 @@ while True:
     try:
         result = DeepFace.verify(frame, reference_image_path)
         if result["verified"]:
-            print("Yes, it's your face!")
+            face_detected = True
         else:
-            print("No, it's not your face.")
+            face_detected = False
     except Exception as e:
-        print(f"Error during face recognition: {e}")
+        face_detected = False
     
     # Quita
     if cv2.waitKey(1) == ord('q'):

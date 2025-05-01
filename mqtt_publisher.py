@@ -1,29 +1,30 @@
+from main import face_detected
 import paho.mqtt.client as mqtt
 
-# Define the MQTT broker and topic
-Broker = "192.168.1.6"  # This should be the IP address of your Raspberry Pi
+# Variabler inom Mqtt
+Broker = "192.168.1.6"  # Raspberry pi adress
 Port = 1883
 Topic = "face_detection/alert"
 
-# The message to be sent
-Message = "möthe är bäst"
+# Medelandet
+Message = face_detected
 
-# Callback function for when the client connects to the broker
+# Funktion för när den ansluter till servern
 def on_connect(client, userdata, flags, rc):
     print(f"Connected to MQTT broker with result code: {rc}")
-    # After connection, publish the message to the topic
+    # Publisera medelandet
     client.publish(Topic, Message)
     print(f"Message '{Message}' sent to topic '{Topic}'")
-    client.disconnect()  # Disconnect after publishing the message
+    client.disconnect()  # Disconnect
 
-# Set up MQTT client
+# MQTT klienten
 client = mqtt.Client()
 
-# Set the callback for when the client connects
+# Setter callback när den ansluter
 client.on_connect = on_connect
 
-# Connect to the MQTT broker
+# Anslut till MQTT broker
 client.connect(Broker, Port, 60)
 
-# Start the loop to connect and send the message
+# Funktionen
 client.loop_forever()
