@@ -1,14 +1,14 @@
-import cv2 # type: ignore
-from deepface import DeepFace # type: ignore 
+import cv2  # type: ignore
+from deepface import DeepFace  # type: ignore
+import mqtt_publisher  
+
+# Referens bild 
+reference_image_path = "Images\\WIN_20250430_20_44_12_Pro.jpg"
 
 
-# Referens bild
-reference_image_path = "Images\WIN_20250430_20_44_12_Pro.jpg"
+frame_count = 0
 
-# Boolean message
-face_detected = False
-
-# Starta webcam
+# Starta Webcam
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():
@@ -18,30 +18,36 @@ if not cap.isOpened():
 print("Press 'q' to quit")
 
 while True:
-    # Kolla varje frame
     ret, frame = cap.read()
     
     if not ret:
         print("Can't receive frame (stream end?). Exiting ...")
         break
     
-    # Visa webcam live
-    cv2.imshow('Webcam Feed', frame)
+    # Lägg till 1 på frame_count
+    frame_count += 1
 
-    # Kolla ifall det är refrence bilden
-    try:
-        result = DeepFace.verify(frame, reference_image_path)
-        if result["verified"]:
-            face_detected = True
-        else:
-            face_detected = False
-    except Exception as e:
-        face_detected = False
+    # Kolla så bilden matchar var 5:te frame
+    if frame_count % 5 == 0:
+        try:
+            result = DeepFace.verify(frame, reference_image_path)
+            if result["verified"]:
+                print("true")
+                message = "True"
+            else:
+                print("false")
+                message = "False"
+        except Exception as e:
+            print("false")
+            message = "False"
+
+        #Sicka till mqtt script
+        mqtt_publisher.send_message(message)  
     
-    # Quita
+    # Stäng av om man trycker q
     if cv2.waitKey(1) == ord('q'):
         break
 
-# Stäng av
+
 cap.release()
 cv2.destroyAllWindows()
