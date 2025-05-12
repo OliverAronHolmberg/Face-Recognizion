@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 
 # MQTT Settings
-Broker = "test.mosquitto.org"  # Mqtt adress
+Broker = "test.mosquitto"  # Mqtt adress
 Port = 1883
 Topic = "oliver/face_detection/alert"
 
