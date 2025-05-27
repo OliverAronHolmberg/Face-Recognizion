@@ -1,2 +1,0 @@
- #Sicka till mqtt script
-        mqtt_publisher.send_message(message)   #Kan vara fel

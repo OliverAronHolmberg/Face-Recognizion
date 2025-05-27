@@ -1,0 +1,30 @@
+<img id="liveimg" src="latest.jpg" width="640" height="480" />
+<br/>
+<img id="status-icon" src="x.png" width="64" height="64" alt="Verification Status" />
+
+<script>
+  const webcamImg = document.getElementById('liveimg');
+  const statusIcon = document.getElementById('status-icon');
+
+  // Refresh webcam image every 100ms
+  setInterval(() => {
+    webcamImg.src = 'latest.jpg?timestamp=' + new Date().getTime();
+  }, 100);
+
+  // Poll verification status every 1 second
+  setInterval(() => {
+    fetch('status.txt?t=' + new Date().getTime()) // cache bust
+      .then(response => response.text())
+      .then(status => {
+        status = status.trim().toLowerCase();
+        if (status === 'true') {
+          statusIcon.src = 'check.png';
+        } else {
+          statusIcon.src = 'x.png';
+        }
+      })
+      .catch(() => {
+        statusIcon.src = 'x.png'; // default if error
+      });
+  }, 1000);
+</script>
